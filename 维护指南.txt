@@ -1,0 +1,176 @@
+
+一、项目组成
+--------------------------------------------------------------------------------
+主要组成：
+  README.md          — 页面布局与文案（改完推送即生效）
+  assets/            — 图片/SVG（部分由 Actions 每天自动生成）
+  .github/workflows/ — 定时更新统计卡片、贡献蛇等
+
+本仓库仅 Markdown + SVG + GitHub Actions
+
+
+二、日常修改通用流程（每次改完都要做）
+--------------------------------------------------------------------------------
+1. 用 VS Code / Cursor 打开本地仓库文件夹。
+
+2. 按下面「各模块修改步骤」改对应文件。
+   注意：README 里 <table> 的 <td> 内部不要空行，否则 GitHub 会把表格当纯文本显示。
+
+3. 在终端进入仓库目录，检查改动：
+     git status
+     git diff
+
+4. 若远程有 Actions 的新提交，先同步：
+     git pull --rebase origin main
+
+5. 提交并推送（只 add 你改过的文件）：
+     git add README.md
+     git commit -m "说明本次改了什么"
+     git push origin main
+
+6. 打开 https://github.com/Afwct 刷新查看（可能有 1～2 分钟缓存）。
+
+
+三、各模块修改步骤
+--------------------------------------------------------------------------------
+
+【1】置顶卡片（📌 Pin，当前 2 个）
+  文件：README.md 顶部 <table>；仓库 Pin 另见 workflow。
+  当前：
+    - 个人站 https://afwct.top → 手写 assets/pin-pages.svg、pin-pages-dark.svg（workflow 不生成）
+    - Afwct/pdf-tool          → workflow 生成 pin-pdf-tool.svg、pin-pdf-tool-dark.svg
+  改个人站卡片：直接编辑 pin-pages.svg / pin-pages-dark.svg（图标为地球，非仓库书）。
+  改 pdf-tool：改 workflow 的 options，Run workflow 重新生成。
+  布局：一行两列 width="50%"，img width="100%"，单个 <table> 一行即可。
+  仓库 Pin 背景色：浅色 bg_color=ffffff，深色 bg_color=151b23。
+
+【2】自我介绍 — 第一行
+  文件：README.md 表格左上单元格，第一个 <picture> 里的 demolab 链接。
+  当前文案：你好，这里是Afwct，
+  字体：Noto+Sans+SC（URL 里 font=Noto+Sans+SC）
+  步骤：
+    - 修改 URL 中 lines= 后面的内容（需 URL 编码）。
+    - 例：你好，这里是Afwct， → %E4%BD%A0%E5%A5%BD%EF%BC%8C%E8%BF%99%E9%87%8C%E6%98%AFAfwct%EF%BC%8C
+    - 在线编码：浏览器搜「URL encode」，或使用 VS Code 插件。
+    - 浅色 color=0A4A46，深色 color=2A9E98，weight=700。
+    - 改完直接 push，无需 Actions。
+
+【3】自我介绍 — 打字机动画（第二行起，中文）
+  文件：README.md 同一单元格内第二个 <picture>。
+  步骤：
+    - 多行用分号 ; 连接，写在 lines= 参数里（整段需 URL 编码）。
+    - 要在「偶尔折腾自动化，」后换行：编码前写成两行，中间用 ; 分隔。
+    - 示例结构（编码前）：
+        写代码、搭服务、搓游戏、偶尔折腾自动化，;
+        能脚本化的绝不手点，;
+        GitHub 上随缘提交，希望慢慢把技能树点满。;
+        ;
+        如果你也喜欢世界第一公主殿下，那么我们一定会成为好朋友的！
+    - 改 height=140 若行数变多；font=Noto+Sans+SC（与第一行一致）。
+
+【4】GitHub 统计卡片（右侧 Stats）
+  文件：.github/workflows/profile.yml → Generate stats card
+  步骤：改 username=Afwct、颜色 → Run workflow → 更新 stats.svg / stats-dark.svg。
+  README：alt 文案在 <img alt="Afwct's GitHub Stats"/>。
+
+【5】贡献蛇（Contribution Snake）— 背景色怎么改
+  文件：.github/workflows/profile.yml
+        → Generate contribution snake (light) 与 (dark) 两步里的 outputs 一行
+
+  ★ 只改 README 不会变蛇的背景，必须改 workflow 并 Run workflow。
+
+  参数写在 outputs 的 URL 查询串里（%23 表示 #）：
+
+  浅色（Generate contribution snake (light)）：
+    dist/snake.svg?...&color_background=%23ffffff
+                              ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+                              改成你要的十六进制颜色，前面加 %23
+    例：GitHub 浅色主页 → %23ffffff
+        透明底（不推荐，会露主页色）→ 无底色需看 snk 是否支持，一般用实色
+
+  深色（Generate contribution snake (dark)）：
+    dist/snake-dark.svg?...&color_background=%23151b23
+    例：纯黑 → %23000000
+        旧版 GitHub 深色 → %230d1117（会与主页 #151B23 有色差）
+        与 Pin/主页一致 → %23151b23（当前推荐）
+
+  同一行还可改：
+    color_snake=%23FFB7C5     蛇身颜色（浅色粉红）
+    color_snake=%23E87A96     蛇身颜色（深色）
+    color_dots=空,1,2,3,4 档  共 5 个颜色，逗号分隔，都要写 %23：
+      浅色空格子：%23ebedf0
+      深色空格子：%2321262d
+      进度色（与浅色相同）：%239EDDD8,%236FCEC8,%2339C5BB,%232A9E98
+
+  修改后必做：
+    1) git push workflow
+    2) Actions → Update Profile Assets → Run workflow
+    3) 等提交 assets/snake.svg、snake-dark.svg 后再刷新主页
+
+  README 引用（不要改背景，只选文件）：
+    深色：snake-dark.svg（勿用 snake-dark.gif，GIF 容易带白底）
+    浅色：snake.svg；动效：snake.gif
+
+【6】技术栈徽章（🛠️）
+  文件：README.md 中 ### 🛠️ 下方
+  步骤：增删 shields.io 徽章行；改完直接 push。
+
+【7】最常用语言（Top Languages）
+  文件：.github/workflows/profile.yml → Generate top languages card
+  步骤：改 langs_count、颜色 → Run workflow。
+
+【8】页脚
+  文件：README.md 最后一行；assets/heart.svg
+
+【9】分隔线
+  文件：assets/divider.svg、divider-dark.svg
+
+
+四、GitHub Actions 说明
+--------------------------------------------------------------------------------
+工作流：Update Profile Assets（.github/workflows/profile.yml）
+
+触发：
+  - 每天 0:00 UTC
+  - 手动 Run workflow
+  - 推送 main 且改动不在 paths-ignore（忽略 assets/**、README.md）
+
+只改 README 时不会触发 workflow；只改 assets 也不会。改 workflow 会触发。
+
+私有仓库 / 私有贡献（必读 GH_PAT）：
+  默认 GITHUB_TOKEN 读不到你的私有库，Pin 会显示 Repository Not found。
+  1) GitHub 右上角头像 → Settings → Developer settings → Personal access tokens
+     → Fine-grained 或 Classic（Classic 更简单）
+  2) Classic：勾选 scope「repo」（完整仓库权限）
+  3) 生成后复制 token（只显示一次）
+  4) 打开仓库 Afwct/Afwct → Settings → Secrets and variables → Actions
+     → New repository secret → 名称填 GH_PAT → 粘贴 token
+  5) Actions → Update Profile Assets → Run workflow
+  6) 等 workflow 成功，assets/pin-image.svg 里不应再出现 Not found
+  workflow 已写 token: ${{ secrets.GH_PAT || github.token }}，有 GH_PAT 才会访问私有库。
+
+
+五、主题色参考
+--------------------------------------------------------------------------------
+  主色 #39C5BB | 正文浅 #1F7A75 | 正文深 #6FCEC8
+  首行浅 #0A4A46 | 首行深 #2A9E98
+  蛇：浅 #FFB7C5 / 深 #E87A96
+
+
+六、常见问题
+--------------------------------------------------------------------------------
+Q：表格变成 HTML 源码？ → <td> 内不要空行。
+Q：Pin 第二行背景和第一行不一样？ → 多为 GitHub 表格偶数行 tr:nth-child(2n) 底色；
+  改成「每行一个 table、只有 1 个 tr」即可；卡片底色用 bg_color=151b23。
+Q：Pin 显示 Something went wrong / Repository Not found？ → 打开 assets/pin-xxx.svg 看文案。
+  公有库：检查 username=Afwct&repo=仓库名 是否拼错。
+  私有库（如 image）：必须配置 Secrets.GH_PAT 后重新 Run workflow；
+  未登录的人访问你主页仍看不到私有库内容，但卡片可以正常生成。
+Q：深色蛇白底？ → README 用 snake-dark.svg；改 color_background 后 Run workflow。
+Q：改了蛇颜色没变化？ → 只改了 README 无效，必须改 workflow 并 Run workflow。
+Q：push 被拒？ → git pull --rebase origin main 后再 push。
+Q：改打字机中文？ → 只改第二个 picture 的 lines= URL，用 URL 编码工具。
+
+================================================================================
+  文档版本：2026-05-23
+================================================================================

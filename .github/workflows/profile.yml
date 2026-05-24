@@ -1,0 +1,122 @@
+name: Update Profile Assets
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+    paths-ignore:
+      - assets/**
+      - README.md
+
+permissions:
+  contents: write
+
+concurrency:
+  group: profile-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ github.token }}
+          fetch-depth: 1
+
+      # pin-pages.svg / pin-pages-dark.svg are hand-maintained (custom site card)
+
+      - name: Generate pin card pdf-tool (light)
+        uses: stats-organization/github-readme-stats-action@v2
+        with:
+          card: pin
+          path: assets/pin-pdf-tool.svg
+          token: ${{ secrets.GH_PAT || github.token }}
+          options: username=Afwct&repo=pdf-tool&bg_color=ffffff&title_color=39C5BB&text_color=2A9E98&icon_color=1F7A75
+
+      - name: Generate pin card pdf-tool (dark)
+        uses: stats-organization/github-readme-stats-action@v2
+        with:
+          card: pin
+          path: assets/pin-pdf-tool-dark.svg
+          token: ${{ secrets.GH_PAT || github.token }}
+          options: username=Afwct&repo=pdf-tool&bg_color=151b23&title_color=39C5BB&text_color=b8c0cc&icon_color=6FCEC8
+
+      - name: Generate stats card (light)
+        uses: stats-organization/github-readme-stats-action@v2
+        with:
+          card: stats
+          path: assets/stats.svg
+          token: ${{ secrets.GH_PAT || github.token }}
+          options: username=Afwct&show_icons=true&bg_color=ffffff&title_color=39C5BB&text_color=2A9E98&icon_color=1F7A75
+
+      - name: Generate stats card (dark)
+        uses: stats-organization/github-readme-stats-action@v2
+        with:
+          card: stats
+          path: assets/stats-dark.svg
+          token: ${{ secrets.GH_PAT || github.token }}
+          options: username=Afwct&show_icons=true&bg_color=151b23&title_color=39C5BB&text_color=b8c0cc&icon_color=6FCEC8
+
+      - name: Generate top languages card (light)
+        uses: stats-organization/github-readme-stats-action@v2
+        with:
+          card: top-langs
+          path: assets/top-langs.svg
+          token: ${{ secrets.GH_PAT || github.token }}
+          options: username=Afwct&layout=compact&langs_count=10&card_width=495&bg_color=ffffff&title_color=39C5BB&text_color=2A9E98&icon_color=1F7A75
+
+      - name: Generate top languages card (dark)
+        uses: stats-organization/github-readme-stats-action@v2
+        with:
+          card: top-langs
+          path: assets/top-langs-dark.svg
+          token: ${{ secrets.GH_PAT || github.token }}
+          options: username=Afwct&layout=compact&langs_count=10&card_width=495&bg_color=151b23&title_color=39C5BB&text_color=b8c0cc&icon_color=6FCEC8
+
+      - name: Generate contribution snake (light)
+        uses: Platane/snk@v3.2.0
+        with:
+          github_user_name: Afwct
+          github_token: ${{ secrets.GH_PAT || github.token }}
+          outputs: |
+            dist/snake.gif?color_snake=%23FFB7C5&color_dots=%23ebedf0,%239EDDD8,%236FCEC8,%2339C5BB,%232A9E98&color_background=%23F6F8FA
+            dist/snake.svg?color_snake=%23FFB7C5&color_dots=%23ebedf0,%239EDDD8,%236FCEC8,%2339C5BB,%232A9E98&color_background=%23F6F8FA
+
+      - name: Generate contribution snake (dark)
+        uses: Platane/snk@v3.2.0
+        with:
+          github_user_name: Afwct
+          github_token: ${{ secrets.GH_PAT || github.token }}
+          outputs: |
+            dist/snake-dark.gif?color_snake=%23E87A96&color_dots=%2321262d,%239EDDD8,%236FCEC8,%2339C5BB,%232A9E98&color_background=%23151b23
+            dist/snake-dark.svg?color_snake=%23E87A96&color_dots=%2321262d,%239EDDD8,%236FCEC8,%2339C5BB,%232A9E98&color_background=%23151b23
+
+      - name: Copy snake assets
+        run: |
+          mkdir -p assets
+          cp dist/snake.gif assets/snake.gif
+          cp dist/snake.svg assets/snake.svg
+          cp dist/snake-dark.gif assets/snake-dark.gif
+          cp dist/snake-dark.svg assets/snake-dark.svg
+
+      - name: Commit and push
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/
+          if git diff --staged --quiet; then
+            echo "Assets unchanged, skip commit"
+          else
+            git commit -m "chore: update profile assets"
+            git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:${GITHUB_REF_NAME}
+          fi

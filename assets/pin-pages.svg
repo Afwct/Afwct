@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+      width="400"
+      height="120"
+      viewBox="0 0 400 120"
+      fill="none"
+      role="img"
+      aria-labelledby="descId">
+  <title id="titleId">Afwct</title>
+  <desc id="descId">雨椿的专属频道</desc>
+  <style>
+    .header {
+            font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif;
+            fill: #39C5BB;
+            animation: fadeInAnimation 0.8s ease-in-out forwards;
+          }
+          @supports(-moz-appearance: auto) {
+            .header { font-size: 15.5px; }
+          }
+
+    .description {
+      font: 400 13px 'Segoe UI', Ubuntu, Sans-Serif;fill: #2A9E98;
+
+    }
+    .gray { font: 400 12px 'Segoe UI', Ubuntu, Sans-Serif; fill: #2A9E98 }
+    .badge { font: 600 11px 'Segoe UI', Ubuntu, Sans-Serif; }
+    .badge rect { opacity: 0.2 }
+
+    .stat { font: 400 12px 'Segoe UI', Ubuntu, Sans-Serif; fill: #2A9E98 }
+    .stagger {
+      opacity: 0;
+      animation: fadeInAnimation 0.3s ease-in-out forwards;
+    }
+    .not_bold { font-weight: 400 }
+    .bold { font-weight: 700 }
+    .icon {
+      fill: #1F7A75;
+      display: block;
+    }
+
+      @keyframes scaleInAnimation {
+        from {
+          transform: translate(-5px, 5px) scale(0);
+        }
+        to {
+          transform: translate(-5px, 5px) scale(1);
+        }
+      }
+      @keyframes fadeInAnimation {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+          * { animation-duration: 0s !important; animation-delay: 0s !important; }
+  </style>
+  <rect data-testid="card-bg"
+        x="0.5"
+        y="0.5"
+        rx="4.5"
+        height="99%"
+        stroke="#e4e2e2"
+        width="399"
+        fill="#ffffff"
+        stroke-opacity="1" />
+  <g data-testid="card-title" transform="translate(25, 35)">
+    <g transform="translate(0, 0)">
+      <svg class="icon"
+            x="0"
+            y="-13"
+            viewBox="0 0 16 16"
+            width="16"
+            height="16"
+            aria-hidden="true">
+        <path fill-rule="evenodd"
+              d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8.001h13a6.5 6.5 0 1 0 0-.002h-13ZM8 1.5c2.46 2.07 3.94 5.04 3.94 6.5S10.46 12.93 8 15c-2.46-2.07-3.94-5.04-3.94-6.5S5.54 3.57 8 1.5Z" />
+      </svg>
+    </g>
+    <g transform="translate(25, 0)">
+      <text x="0"
+            y="0"
+            class="header"
+            data-testid="header">Afwct</text>
+    </g>
+  </g>
+  <g data-testid="main-card-body" transform="translate(0, 55)">
+    <text class="description" x="25" y="-5">
+      <tspan dy="1.2em" x="25">～这里是如月雨椿( ｰ̀εｰ́ )!～雨椿的专属频道哦!!</tspan>
+    </text>
+    <g transform="translate(30, 45)">
+      <g transform="translate(0, 0)">
+        <g data-testid="primary-lang">
+          <circle data-testid="lang-color"
+                cx="0"
+                cy="-5"
+                r="6"
+                fill="#E87A96" />
+          <text data-testid="lang-name" class="gray" x="15">Miku</text>
+        </g>
+      </g>
+    </g>
+    <svg x="0" y="0">
+      <g transform="translate(-3, 68)" />
+    </svg>
+  </g>
+</svg>
